@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Ecem'in Kasımpatısı 🌸</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;1,500&family=Caveat:wght@600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #ffeef2 0%, #fde2e4 30%, #e2eafc 70%, #d8e2dc 100%);
+      --flower-p1: #ff5d8f;
+      --flower-p2: #ff85a1;
+      --flower-p3: #ffacc5;
+      --flower-p4: #ffcad4;
+      --flower-center: #ffd166;
+      --flower-core: #e76f51;
+      --stem-color: #588157;
+      --leaf-color: #3a5a40;
+      --primary-pink: #ff4d6d;
+      --card-bg: rgba(255, 255, 255, 0.78);
+      --card-border: rgba(255, 255, 255, 0.9);
+      --card-shadow: 0 12px 36px rgba(255, 117, 143, 0.18), 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Comfortaa', cursive, -apple-system, sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      color: #4a4e69;
+    }
+
+    /* Ambient Canvas */
+    #bgCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header Bar */
+    header {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 1.2rem 1rem 0.5rem;
+      max-width: 90%;
+      pointer-events: none;
+    }
+
+    .title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #9d4edd;
+      background: linear-gradient(135deg, #ff4d6d 0%, #c77dff 50%, #7b2cbf 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+      text-shadow: 0 4px 20px rgba(255, 117, 143, 0.2);
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #6c757d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .subtitle span.heart {
+      color: #ff4d6d;
+      display: inline-block;
+      animation: heartPulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes heartPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.25);
+      }
+    }
+
+    /* Top Controls */
+    .top-controls {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 100;
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #555;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .icon-btn:hover {
+      transform: scale(1.1);
+      background: #ffffff;
+      box-shadow: 0 6px 16px rgba(255, 77, 109, 0.2);
+      color: #ff4d6d;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Main Stage */
+    .stage {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    /* Flower Wrapper */
+    .flower-container {
+      position: relative;
+      width: 380px;
+      max-width: 90vw;
+      height: 480px;
+      max-height: 56vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: none;
+      filter: drop-shadow(0 15px 30px rgba(255, 117, 143, 0.25));
+      transition: filter 0.5s ease;
+    }
+
+    .flower-container.glowing {
+      filter: drop-shadow(0 0 40px rgba(255, 209, 102, 0.8)) drop-shadow(0 15px 30px rgba(255, 77, 109, 0.4));
+    }
+
+    #flowerSvg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      transform-origin: 50% 90%;
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Gentle Idle Sway */
+    .idle-sway {
+      animation: naturalSway 5s ease-in-out infinite;
+      transform-origin: 50% 90%;
+    }
+
+    @keyframes naturalSway {
+
+      0%,
+      100% {
+        transform: rotate(0deg) skewX(0deg);
+      }
+
+      25% {
+        transform: rotate(1.2deg) skewX(0.5deg);
+      }
+
+      75% {
+        transform: rotate(-1.2deg) skewX(-0.5deg);
+      }
+    }
+
+    /* Petal & Leaf Transitions */
+    .chrys-petal {
+      transition: fill 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease;
+    }
+
+    .chrys-sepal {
+      transition: fill 0.8s ease;
+    }
+
+    /* Interactive Wiggle Animation when hovered or triggered */
+    .wiggle-fast {
+      animation: happyWiggle 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes happyWiggle {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+
+      15% {
+        transform: rotate(5deg) scale(1.04);
+      }
+
+      30% {
+        transform: rotate(-5deg) scale(1.04);
+      }
+
+      45% {
+        transform: rotate(3deg) scale(1.02);
+      }
+
+      60% {
+        transform: rotate(-3deg) scale(1.02);
+      }
+
+      75% {
+        transform: rotate(1deg) scale(1.01);
+      }
+
+      100% {
+        transform: rotate(0deg) scale(1);
+      }
+    }
+
+    /* Target Drop Indicator / Aura on Flower */
+    .drop-indicator {
+      position: absolute;
+      top: calc(35% - 100px);
+      left: calc(50% - 100px);
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 3px dashed rgba(255, 77, 109, 0.4);
+      background: radial-gradient(circle, rgba(255, 175, 204, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2;
+    }
+
+    .drop-indicator.active {
+      opacity: 1;
+      transform: scale(1.1);
+      border-color: rgba(255, 77, 109, 0.8);
+      animation: pulseDropRing 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulseDropRing {
+
+      0%,
+      100% {
+        transform: scale(1.05);
+        opacity: 0.9;
+      }
+
+      50% {
+        transform: scale(1.15);
+        opacity: 0.6;
+      }
+    }
+
+    /* Sunshine Shower Emojis & Hearts (2-second drop animation) */
+    .sun-emoji-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      line-height: 1;
+      font-size: var(--sz, 1.8rem);
+      filter: drop-shadow(0 4px 10px rgba(255, 183, 3, 0.45));
+      animation: floatUpAndFade var(--dur, 1.8s) cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+    }
+
+    @keyframes floatUpAndFade {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.3) rotate(0deg);
+      }
+
+      18% {
+        opacity: 1;
+        transform: translate(var(--dx1), var(--dy1)) scale(1.25) rotate(var(--rot1));
+      }
+
+      70% {
+        opacity: 0.95;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx2), var(--dy2)) scale(0.65) rotate(var(--rot2));
+      }
+    }
+
+    /* Golden sunshine basking aura on flower */
+    .flower-container.sun-basking {
+      filter: drop-shadow(0 0 50px rgba(255, 183, 3, 0.95)) drop-shadow(0 0 85px rgba(255, 77, 109, 0.5));
+      animation: happySunWiggle 2s ease-in-out;
+    }
+
+    @keyframes happySunWiggle {
+      0% {
+        transform: scale(1) rotate(0deg);
+      }
+
+      20% {
+        transform: scale(1.09) rotate(3deg);
+      }
+
+      40% {
+        transform: scale(1.06) rotate(-3deg);
+      }
+
+      60% {
+        transform: scale(1.08) rotate(2deg);
+      }
+
+      80% {
+        transform: scale(1.04) rotate(-1deg);
+      }
+
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    /* Floating Hearts from Sun */
+    .falling-heart {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      color: #ff4d6d;
+      font-size: 1.2rem;
+      line-height: 1;
+      animation: dropHeartAnim 1.4s ease-out forwards;
+      filter: drop-shadow(0 2px 6px rgba(255, 77, 109, 0.4));
+    }
+
+    @keyframes dropHeartAnim {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.4) rotate(0deg);
+      }
+
+      20% {
+        opacity: 1;
+        transform: translate(var(--tx-start), 10px) scale(1.2) rotate(var(--rot-start));
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx-end), 80px) scale(0.6) rotate(var(--rot-end));
+      }
+    }
+
+    /* Fertilizer Inflating Hearts */
+    .inflating-heart {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      pointer-events: none;
+      z-index: 80;
+      color: #ff3366;
+      filter: drop-shadow(0 6px 16px rgba(255, 51, 102, 0.45));
+      animation: inflateAndPop 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes inflateAndPop {
+      0% {
+        transform: translate(-50%, -50%) scale(0.2) rotate(0deg);
+        opacity: 0.3;
+      }
+
+      35% {
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -20px))) scale(1.5) rotate(var(--rot, 5deg));
+        opacity: 0.95;
+      }
+
+      70% {
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -35px))) scale(2.6) rotate(calc(var(--rot, 5deg) * -1));
+        opacity: 1;
+        filter: drop-shadow(0 0 25px rgba(255, 77, 109, 0.8));
+      }
+
+      92% {
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -40px))) scale(3.1) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, -45px))) scale(3.6);
+        opacity: 0;
+      }
+    }
+
+    /* Sparkle Particle Burst */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      border-radius: 50%;
+      animation: particlePop 0.8s ease-out forwards;
+    }
+
+    @keyframes particlePop {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(var(--px), var(--py)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* Bottom Inventory Bar */
+    .inventory-container {
+      position: relative;
+      z-index: 50;
+      width: 100%;
+      max-width: 520px;
+      padding: 0 1rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .inventory-hint {
+      font-size: 0.78rem;
+      color: #7b7d90;
+      letter-spacing: 0.3px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 4px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+    }
+
+    .inventory-bar {
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      border-radius: 28px;
+      padding: 0.85rem 1.4rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .item-slot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: grab;
+      touch-action: none;
+      position: relative;
+    }
+
+    .item-slot:active {
+      cursor: grabbing;
+    }
+
+    .item-badge {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      background: #ffffff;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+    }
+
+    .item-slot:hover .item-badge {
+      transform: translateY(-4px) scale(1.06);
+      box-shadow: 0 12px 24px rgba(255, 117, 143, 0.25);
+    }
+
+    .item-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #6c757d;
+      letter-spacing: 0.2px;
+    }
+
+    /* Sun Item Specific Style */
+    .sun-icon-svg {
+      width: 58px;
+      height: 58px;
+      filter: drop-shadow(0 4px 8px rgba(255, 183, 3, 0.4));
+      animation: rotateSunSlow 20s linear infinite;
+    }
+
+    @keyframes rotateSunSlow {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Water Item Specific */
+    .water-icon-svg {
+      width: 50px;
+      height: 50px;
+      filter: drop-shadow(0 4px 8px rgba(72, 202, 228, 0.4));
+    }
+
+    /* Fertilizer Item Specific */
+    .fert-icon-svg {
+      width: 48px;
+      height: 48px;
+      filter: drop-shadow(0 4px 8px rgba(114, 9, 183, 0.3));
+    }
+
+    /* Dragging Ghost Clone */
+    .drag-ghost {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%) scale(1.18);
+      filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.22));
+      opacity: 0.96;
+      transition: transform 0.05s ease;
+      touch-action: none;
+    }
+
+    /* Romantic Message Modal / Popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 11, 46, 0.35);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .love-card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      border-radius: 32px;
+      padding: 2.2rem 2rem 1.8rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(255, 77, 109, 0.3), 0 8px 24px rgba(0, 0, 0, 0.08);
+      transform: scale(0.8) translateY(30px);
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-overlay.active .love-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .card-ribbon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff758f 0%, #ff4d6d 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      margin: 0 auto 1.2rem;
+      box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
+      animation: heartPulse 1.8s ease-in-out infinite;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: #ff4d6d;
+      margin-bottom: 0.8rem;
+    }
+
+    .card-message {
+      font-family: 'Caveat', cursive;
+      font-size: 1.85rem;
+      line-height: 1.35;
+      color: #3d348b;
+      margin-bottom: 1.6rem;
+      padding: 0.5rem 0.6rem;
+      font-weight: 700;
+    }
+
+    .close-card-btn {
+      background: linear-gradient(135deg, #ff4d6d 0%, #e01e5a 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 0.75rem 2rem;
+      font-family: 'Comfortaa', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(255, 77, 109, 0.35);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-card-btn:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 10px 24px rgba(255, 77, 109, 0.5);
+    }
+
+    .close-card-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Color change toast */
+    .color-toast {
+      position: absolute;
+      top: 4.8rem;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ff4d6d;
+      box-shadow: 0 6px 18px rgba(255, 77, 109, 0.2);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .color-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .title {
+        font-size: 1.6rem;
+      }
+
+      .inventory-bar {
+        padding: 0.7rem 0.9rem;
+      }
+
+      .item-badge {
+        width: 62px;
+        height: 62px;
+        border-radius: 18px;
+      }
+
+      .sun-icon-svg {
+        width: 50px;
+        height: 50px;
+      }
+
+      .water-icon-svg {
+        width: 42px;
+        height: 42px;
+      }
+
+      .fert-icon-svg {
+        width: 42px;
+        height: 42px;
+      }
+
+      .flower-container {
+        width: 330px;
+        height: 400px;
+      }
+
+      .card-message {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Canvas for Ambient Particles/Sparkles -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Sound Toggle -->
+  <div class="top-controls">
+    <button class="icon-btn" id="soundBtn" title="Sesi Aç/Kapat">
+      <span id="soundIcon">🔊</span>
+    </button>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <h1 class="title">Ecem'in Kasımpatısı</h1>
+    <div class="subtitle">
+      <span>Güneşle canlandır, Suyla renklendir, Gübreyle besle.</span>
+      <span class="heart">♥</span>
+    </div>
+  </header>
+
+  <!-- Dynamic Color Toast Notification -->
+  <div class="color-toast" id="colorToast">Yeni Renk Açıldı ✨</div>
+
+  <!-- Interactive Stage -->
+  <main class="stage">
+    <div class="drop-indicator" id="dropIndicator"></div>
+
+    <div class="flower-container idle-sway" id="flowerContainer" title="Dokun ya da üzerine gel!">
+      <svg id="flowerSvg" viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Dynamic Radial Gradients for Chrysanthemum Petals (Illuminated from flower center) -->
+          <radialGradient id="petalGradOuter" cx="200" cy="170" r="115" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="var(--flower-p2)" />
+            <stop offset="55%" stop-color="var(--flower-p1)" />
+            <stop offset="100%" stop-color="var(--flower-p1)" stop-opacity="0.9" />
+          </radialGradient>
+
+          <radialGradient id="petalGradMid" cx="200" cy="170" r="85" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="var(--flower-p3)" />
+            <stop offset="50%" stop-color="var(--flower-p2)" />
+            <stop offset="100%" stop-color="var(--flower-p1)" />
+          </radialGradient>
+
+          <radialGradient id="petalGradInner" cx="200" cy="170" r="55" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="var(--flower-p4)" />
+            <stop offset="60%" stop-color="var(--flower-p3)" />
+            <stop offset="100%" stop-color="var(--flower-p2)" />
+          </radialGradient>
+
+          <!-- Center Disc Gradient -->
+          <radialGradient id="centerCoreGrad" cx="200" cy="170" r="22" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="var(--flower-core)" />
+            <stop offset="60%" stop-color="var(--flower-center)" />
+            <stop offset="100%" stop-color="var(--flower-p1)" />
+          </radialGradient>
+
+          <!-- Stem Gradient -->
+          <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#2d4a22" />
+            <stop offset="45%" stop-color="#4f772d" />
+            <stop offset="100%" stop-color="#1f3718" />
+          </linearGradient>
+
+          <!-- Chrysanthemum Lobed Leaf Gradient -->
+          <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#588157" />
+            <stop offset="50%" stop-color="#3a5a40" />
+            <stop offset="100%" stop-color="#223a27" />
+          </linearGradient>
+
+          <linearGradient id="leafGradRight" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#588157" />
+            <stop offset="50%" stop-color="#3a5a40" />
+            <stop offset="100%" stop-color="#223a27" />
+          </linearGradient>
+
+          <!-- Soft Glow Filter -->
+          <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        <!-- Flower Pot / Soil Mound -->
+        <g id="potGroup">
+          <ellipse cx="200" cy="452" rx="90" ry="18" fill="rgba(60, 40, 20, 0.12)" />
+          <path d="M136 440 C 136 472, 264 472, 264 440 Z" fill="#d4a373" opacity="0.5" />
+          <ellipse cx="200" cy="440" rx="64" ry="13" fill="#bc6c25" opacity="0.8" />
+          <ellipse cx="200" cy="439" rx="52" ry="9" fill="#8c4e16" opacity="0.9" />
+        </g>
+
+        <!-- Plant Stem & Botanically Accurate Chrysanthemum Leaves -->
+        <g id="stemGroup">
+          <!-- Curved organic stem reaching right to the flower receptacle -->
+          <path id="stemPath" d="M 200 440 Q 192 315, 200 172" fill="none" stroke="url(#stemGrad)" stroke-width="11"
+            stroke-linecap="round" />
+
+          <!-- Receptacle / Calyx Bracts at stem-flower junction -->
+          <path d="M 186 172 C 186 190, 214 190, 214 172 Z" fill="#223a27" />
+          <path d="M 191 176 C 183 192, 177 197, 172 201 C 181 195, 189 187, 194 178 Z" fill="#3a5a40" />
+          <path d="M 209 176 C 217 192, 223 197, 228 201 C 219 195, 211 187, 206 178 Z" fill="#3a5a40" />
+
+          <!-- Left Leaf: Characteristic Pinnatifid Deeply Lobed Chrysanthemum Leaf -->
+          <g transform="translate(196, 318) rotate(-34)" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.12))">
+            <!-- Leaf Stalk / Petiole -->
+            <path d="M 0 0 C -10 2, -20 -2, -28 -7" fill="none" stroke="#2d4a22" stroke-width="4.5"
+              stroke-linecap="round" />
+            <!-- Lobed Leaf Blade -->
+            <path d="M -28 -7
+                     C -36 -3, -44 8, -54 6
+                     C -46 -4, -50 -14, -64 -13
+                     C -60 -23, -70 -27, -84 -29
+                     C -87 -38, -98 -45, -112 -42
+                     C -103 -53, -93 -57, -83 -54
+                     C -78 -64, -68 -66, -58 -60
+                     C -49 -51, -44 -53, -39 -45
+                     C -31 -36, -24 -24, -28 -7 Z" fill="url(#leafGrad)" stroke="#1f3718" stroke-width="1.2" />
+            <!-- Veins -->
+            <path d="M -28 -7 C -54 -21, -80 -36, -110 -42" fill="none" stroke="#8cb369" stroke-width="2.2"
+              stroke-linecap="round" opacity="0.85" />
+            <path d="M -48 -17 C -53 -10, -58 -9, -61 -13" fill="none" stroke="#8cb369" stroke-width="1.3"
+              opacity="0.75" />
+            <path d="M -68 -28 C -74 -23, -78 -24, -82 -27" fill="none" stroke="#8cb369" stroke-width="1.3"
+              opacity="0.75" />
+            <path d="M -58 -24 C -54 -33, -50 -40, -55 -46" fill="none" stroke="#8cb369" stroke-width="1.3"
+              opacity="0.75" />
+            <path d="M -76 -34 C -72 -43, -67 -49, -75 -53" fill="none" stroke="#8cb369" stroke-width="1.3"
+              opacity="0.75" />
+          </g>
+
+          <!-- Right Leaf: Characteristic Pinnatifid Chrysanthemum Leaf -->
+          <g transform="translate(199, 260) rotate(36) scale(0.88)" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.12))">
+            <!-- Leaf Stalk / Petiole -->
+            <path d="M 0 0 C 10 2, 20 -2, 28 -7" fill="none" stroke="#2d4a22" stroke-width="4.5"
+              stroke-linecap="round" />
+            <!-- Lobed Leaf Blade -->
+            <path d="M 28 -7
+                     C 36 -3, 44 8, 54 6
+                     C 46 -4, 50 -14, 64 -13
+                     C 60 -23, 70 -27, 84 -29
+                     C 87 -38, 98 -45, 112 -42
+                     C 103 -53, 93 -57, 83 -54
+                     C 78 -64, 68 -66, 58 -60
+                     C 49 -51, 44 -53, 39 -45
+                     C 31 -36, 24 -24, 28 -7 Z" fill="url(#leafGradRight)" stroke="#1f3718" stroke-width="1.2" />
+            <!-- Veins -->
+            <path d="M 28 -7 C 54 -21, 80 -36, 110 -42" fill="none" stroke="#8cb369" stroke-width="2.2"
+              stroke-linecap="round" opacity="0.85" />
+            <path d="M 48 -17 C 53 -10, 58 -9, 61 -13" fill="none" stroke="#8cb369" stroke-width="1.3" opacity="0.75" />
+            <path d="M 68 -28 C 74 -23, 78 -24, 82 -27" fill="none" stroke="#8cb369" stroke-width="1.3"
+              opacity="0.75" />
+            <path d="M 58 -24 C 54 -33, 50 -40, 55 -46" fill="none" stroke="#8cb369" stroke-width="1.3"
+              opacity="0.75" />
+            <path d="M 76 -34 C 72 -43, 67 -49, 75 -53" fill="none" stroke="#8cb369" stroke-width="1.3"
+              opacity="0.75" />
+          </g>
+
+          <!-- Small Upper Left Leaflet -->
+          <g transform="translate(197, 210) rotate(-26) scale(0.62)" filter="drop-shadow(0 3px 5px rgba(0,0,0,0.1))">
+            <path d="M 0 0 C -10 2, -20 -2, -28 -7" fill="none" stroke="#2d4a22" stroke-width="4.5"
+              stroke-linecap="round" />
+            <path d="M -28 -7
+                     C -36 -3, -44 8, -54 6
+                     C -46 -4, -50 -14, -64 -13
+                     C -60 -23, -70 -27, -84 -29
+                     C -87 -38, -98 -45, -112 -42
+                     C -103 -53, -93 -57, -83 -54
+                     C -78 -64, -68 -66, -58 -60
+                     C -49 -51, -44 -53, -39 -45
+                     C -31 -36, -24 -24, -28 -7 Z" fill="url(#leafGrad)" stroke="#1f3718" stroke-width="1.2" />
+            <path d="M -28 -7 C -54 -21, -80 -36, -110 -42" fill="none" stroke="#8cb369" stroke-width="2"
+              opacity="0.8" />
+          </g>
+        </g>
+
+        <!-- Chrysanthemum Bloom (Dense, Multi-Layered Radiating Petals Centered Exactly at 200, 170) -->
+        <g id="bloomGroup">
+          <!-- Behind Flower: Green Sepals -->
+          <g id="layerSepals"></g>
+          <!-- Layer 1: Outermost long base petals -->
+          <g id="layerOuter1"></g>
+          <!-- Layer 2: Outer dense petals -->
+          <g id="layerOuter2"></g>
+          <!-- Layer 3: Mid-outer petals -->
+          <g id="layerMid1"></g>
+          <!-- Layer 4: Mid-inner petals -->
+          <g id="layerMid2"></g>
+          <!-- Layer 5: Inner cupped petals -->
+          <g id="layerInner"></g>
+          <!-- Layer 6: Center surrounding florets -->
+          <g id="layerCenterCup"></g>
+
+          <!-- Center Disc of Chrysanthemum -->
+          <g id="layerCore">
+            <circle cx="200" cy="170" r="22" fill="url(#centerCoreGrad)" stroke="var(--flower-p1)" stroke-width="1" />
+            <circle cx="200" cy="170" r="16" fill="var(--flower-core)" opacity="0.38" />
+            <!-- Concentric Golden Sparkle Florets -->
+            <g fill="rgba(255, 245, 190, 0.9)" id="centerFlorets"></g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </main>
+
+  <!-- Bottom Inventory Bar -->
+  <footer class="inventory-container">
+    <div class="inventory-hint">Çiçeği beslemek için öğeleri sürükleyip bırak ✨</div>
+    <nav class="inventory-bar" aria-label="Bakım Araçları">
+
+      <!-- ITEM 1: SUN (ECEM) -->
+      <div class="item-slot" id="itemSun" data-type="sun" title="Güneş (ECEM) - Çiçeğin üzerine bırak">
+        <div class="item-badge">
+          <svg class="sun-icon-svg" viewBox="0 0 100 100">
+            <!-- Sun Rays -->
+            <g stroke="#ffb703" stroke-width="4.5" stroke-linecap="round">
+              <line x1="50" y1="6" x2="50" y2="18" />
+              <line x1="50" y1="82" x2="50" y2="94" />
+              <line x1="6" y1="50" x2="18" y2="50" />
+              <line x1="82" y1="50" x2="94" y2="50" />
+              <line x1="19" y1="19" x2="28" y2="28" />
+              <line x1="72" y1="72" x2="81" y2="81" />
+              <line x1="19" y1="81" x2="28" y2="72" />
+              <line x1="72" y1="28" x2="81" y2="19" />
+            </g>
+            <!-- Sun Body -->
+            <circle cx="50" cy="50" r="28" fill="#ffd166" stroke="#fb8500" stroke-width="2" />
+            <!-- ECEM Text clearly written inside -->
+            <text x="50" y="55" font-family="'Comfortaa', sans-serif" font-size="12.5" font-weight="900" fill="#d90429"
+              text-anchor="middle" letter-spacing="1">ECEM</text>
+            <circle cx="50" cy="62" r="1.5" fill="#e63946" />
+          </svg>
+        </div>
+        <span class="item-label">Güneş</span>
+      </div>
+
+      <!-- ITEM 2: WATER -->
+      <div class="item-slot" id="itemWater" data-type="water" title="Su - Çiçeğin üzerine bırak">
+        <div class="item-badge">
+          <svg class="water-icon-svg" viewBox="0 0 100 100">
+            <!-- Cute Watering Can / Magic Bottle -->
+            <defs>
+              <linearGradient id="waterDropGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#a0c4ff" />
+                <stop offset="60%" stop-color="#48cae4" />
+                <stop offset="100%" stop-color="#0096c7" />
+              </linearGradient>
+            </defs>
+            <!-- Glowing droplet / bottle shape -->
+            <path d="M 50 14 C 50 14, 76 52, 76 68 A 26 26 0 1 1 24 68 C 24 52, 50 14, 50 14 Z"
+              fill="url(#waterDropGrad)" />
+            <!-- Highlight shine -->
+            <ellipse cx="40" cy="62" rx="7" ry="13" fill="#ffffff" opacity="0.65" transform="rotate(-25 40 62)" />
+            <circle cx="56" cy="74" r="3" fill="#ffffff" opacity="0.75" />
+            <!-- Little Heart inside droplet -->
+            <path d="M 50 56 C 48 53, 44 53, 44 56 C 44 60, 50 64, 50 64 C 50 64, 56 60, 56 56 C 56 53, 52 53, 50 56 Z"
+              fill="#ffffff" opacity="0.85" />
+          </svg>
+        </div>
+        <span class="item-label">Su Damlası</span>
+      </div>
+
+      <!-- ITEM 3: FERTILIZER -->
+      <div class="item-slot" id="itemFertilizer" data-type="fertilizer" title="Sevgi Gübresi - Çiçeğin üzerine bırak">
+        <div class="item-badge">
+          <svg class="fert-icon-svg" viewBox="0 0 100 100">
+            <!-- Heart Potion / Fertilizer Sack -->
+            <defs>
+              <linearGradient id="fertGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#e0aaff" />
+                <stop offset="60%" stop-color="#c77dff" />
+                <stop offset="100%" stop-color="#7b2cbf" />
+              </linearGradient>
+            </defs>
+            <!-- Bag/Potion Body -->
+            <path
+              d="M 38 28 L 62 28 C 68 28, 78 40, 78 68 C 78 84, 66 90, 50 90 C 34 90, 22 84, 22 68 C 22 40, 32 28, 38 28 Z"
+              fill="url(#fertGrad)" />
+            <!-- Neck & Tie -->
+            <rect x="36" y="20" width="28" height="8" rx="3" fill="#ffb703" />
+            <ellipse cx="50" cy="28" rx="8" ry="4" fill="#fb8500" />
+            <!-- Heart Badge on bag -->
+            <path d="M 50 54 C 47 48, 39 48, 39 55 C 39 63, 50 71, 50 71 C 50 71, 61 63, 61 55 C 61 48, 53 48, 50 54 Z"
+              fill="#ff4d6d" />
+            <!-- Sparkles -->
+            <circle cx="64" cy="46" r="2.5" fill="#ffe3e0" />
+            <circle cx="34" cy="68" r="2" fill="#ffe3e0" />
+          </svg>
+        </div>
+        <span class="item-label">Gübre</span>
+      </div>
+
+    </nav>
+  </footer>
+
+  <!-- Romantic Message Popup Modal -->
+  <div class="modal-overlay" id="loveModal" role="dialog" aria-modal="true">
+    <div class="love-card">
+      <div class="card-ribbon">♥</div>
+      <h3 class="card-title">Kalbimden Bir Not</h3>
+      <p class="card-message" id="loveMessageText">
+        "Seni her gün, dünden daha çok seviyorum."
+      </p>
+      <button class="close-card-btn" id="closeCardBtn">
+        <span>Sonsuza Dek</span>
+        <span>🌸</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* =====================================================================
+       1. SYNTHESIZED WEB AUDIO API SOUND SYSTEM (No external assets required)
+       ===================================================================== */
+    class RomanticAudio {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      // Cute pop when picking up an item
+      playPickup() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(420, now);
+        osc.frequency.exponentialRampToValueAtTime(740, now + 0.1);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.17);
+      }
+
+      // Sparkle chime when hearts drop from sun
+      playSunSparkle() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const notes = [1046.5, 1318.5, 1567.98, 2093.0]; // C6, E6, G6, C7
+        const freq = notes[Math.floor(Math.random() * notes.length)];
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.36);
+      }
+
+      // Joyous 2-second celestial sun melody when sun is dropped
+      playSunMelody() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        // Bright C-major celestial sun progression: C5, E5, G5, C6, D6, E6, G6, C7
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1174.66, 1318.51, 1567.98, 2093.00];
+        notes.forEach((freq, i) => {
+          const t = now + (i * 0.22);
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+          osc.frequency.setValueAtTime(freq, t);
+
+          gain.gain.setValueAtTime(0.001, t);
+          gain.gain.exponentialRampToValueAtTime(0.16, t + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(t);
+          osc.stop(t + 0.45);
+        });
+      }
+
+      // Water droplet splash + magical chord
+      playWaterSplash() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+
+        // Bubble Bloop
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.14);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.29);
+
+        // Shimmer chord for color change
+        [587.33, 739.99, 880.0, 1174.66].forEach((f, idx) => {
+          const sOsc = this.ctx.createOscillator();
+          const sGain = this.ctx.createGain();
+          sOsc.type = 'sine';
+          sOsc.frequency.setValueAtTime(f, now + 0.08 + idx * 0.05);
+
+          sGain.gain.setValueAtTime(0.001, now);
+          sGain.gain.setValueAtTime(0.12, now + 0.08 + idx * 0.05);
+          sGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8 + idx * 0.05);
+
+          sOsc.connect(sGain);
+          sGain.connect(this.ctx.destination);
+          sOsc.start(now + 0.08 + idx * 0.05);
+          sOsc.stop(now + 0.85 + idx * 0.05);
+        });
+      }
+
+      // Fertilizer heart inflating sound (rising whimsical pitch)
+      playInflate() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.exponentialRampToValueAtTime(540, now + 1.2);
+
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.18, now + 0.6);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.3);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 1.35);
+      }
+
+      // Heart POP sound
+      playPop() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(750, now);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.12);
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+
+      // Romantic revelation chord
+      playLoveChord() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        // D Major celestial chord: D5, F#5, A5, D6
+        const freqs = [587.33, 739.99, 880.00, 1174.66];
+        freqs.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.setValueAtTime(0.15, now + idx * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 1.8 + idx * 0.07);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now + idx * 0.07);
+          osc.stop(now + 1.9 + idx * 0.07);
+        });
+      }
+    }
+
+    const sound = new RomanticAudio();
+
+    // Sound toggle button
+    const soundBtn = document.getElementById('soundBtn');
+    const soundIcon = document.getElementById('soundIcon');
+    soundBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sound.init();
+      sound.muted = !sound.muted;
+      soundIcon.textContent = sound.muted ? '🔇' : '🔊';
+    });
+
+
+    /* =====================================================================
+       2. PROCEDURAL CHRYSANTHEMUM PETAL BUILDER (Lush, Multi-Layered SVG)
+       ===================================================================== */
+    const layerSepals = document.getElementById('layerSepals');
+    const layerOuter1 = document.getElementById('layerOuter1');
+    const layerOuter2 = document.getElementById('layerOuter2');
+    const layerMid1 = document.getElementById('layerMid1');
+    const layerMid2 = document.getElementById('layerMid2');
+    const layerInner = document.getElementById('layerInner');
+    const layerCenterCup = document.getElementById('layerCenterCup');
+    const centerFlorets = document.getElementById('centerFlorets');
+
+    // Generates mathematically exact chrysanthemum petal path in SVG world coordinates
+    // Completely eliminates any CSS/SVG transform double-offset or browser quirks!
+    function generatePetalD(cx, cy, angleDeg, length, width, curl = 0) {
+      const rad = (angleDeg - 90) * Math.PI / 180; // 0 deg points straight up
+      const cos = Math.cos(rad);
+      const sin = Math.sin(rad);
+
+      // Coordinate mapper: x is perpendicular to petal axis, y is along petal outward
+      const pt = (x, y) => {
+        const rx = cx + (y * cos - x * sin);
+        const ry = cy + (y * sin + x * cos);
+        return `${rx.toFixed(1)},${ry.toFixed(1)}`;
+      };
+
+      const hw = width / 2;
+      const tipX = curl;
+      const tipY = length;
+
+      // Base starts near center disc, flares gracefully, then tapers into curved tip
+      return `M ${pt(-hw * 0.25, 6)} ` +
+        `C ${pt(-hw * 0.85, length * 0.25)} ${pt(-hw * 1.05 + curl * 0.3, length * 0.72)} ${pt(tipX, tipY)} ` +
+        `C ${pt(hw * 1.05 + curl * 0.3, length * 0.72)} ${pt(hw * 0.85, length * 0.25)} ${pt(hw * 0.25, 6)} ` +
+        `Z`;
+    }
+
+    function createPetalElement(d, fill, className = 'chrys-petal') {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('fill', fill);
+      path.setAttribute('class', className);
+      return path;
+    }
+
+    function buildChrysanthemumFlower() {
+      const cx = 200, cy = 170;
+
+      // 0. Green Sepals under the bloom (12 sepals)
+      const sepalCount = 12;
+      for (let i = 0; i < sepalCount; i++) {
+        const angle = i * 360 / sepalCount;
+        const d = generatePetalD(cx, cy, angle, 48, 14, 0);
+        layerSepals.appendChild(createPetalElement(d, 'url(#leafGrad)', 'chrys-sepal'));
+      }
+
+      // 1. Layer Outer 1: Longest backdrop petals (30 petals)
+      const count1 = 30;
+      for (let i = 0; i < count1; i++) {
+        const angle = i * 360 / count1;
+        const curl = (i % 2 === 0 ? 1 : -1) * 4;
+        const len = 98 + (i % 2 === 0 ? 5 : -3);
+        const d = generatePetalD(cx, cy, angle, len, 18, curl);
+        layerOuter1.appendChild(createPetalElement(d, 'url(#petalGradOuter)'));
+      }
+
+      // 2. Layer Outer 2: Staggered outer petals (28 petals)
+      const count2 = 28;
+      const offset2 = 360 / (count2 * 2);
+      for (let i = 0; i < count2; i++) {
+        const angle = (i * 360 / count2) + offset2;
+        const curl = (i % 2 === 0 ? -1 : 1) * 3.5;
+        const len = 88 + (i % 3 === 0 ? 4 : -2);
+        const d = generatePetalD(cx, cy, angle, len, 17, curl);
+        layerOuter2.appendChild(createPetalElement(d, 'url(#petalGradOuter)'));
+      }
+
+      // 3. Layer Mid 1: Middle layered petals (26 petals)
+      const count3 = 26;
+      for (let i = 0; i < count3; i++) {
+        const angle = (i * 360 / count3) + 4;
+        const curl = (i % 2 === 0 ? 1 : -1) * 3;
+        const len = 75 + (i % 2 === 0 ? 3 : -2);
+        const d = generatePetalD(cx, cy, angle, len, 16, curl);
+        layerMid1.appendChild(createPetalElement(d, 'url(#petalGradMid)'));
+      }
+
+      // 4. Layer Mid 2: Inner-mid petals (22 petals)
+      const count4 = 22;
+      for (let i = 0; i < count4; i++) {
+        const angle = (i * 360 / count4) + 8;
+        const curl = (i % 2 === 0 ? -1 : 1) * 2;
+        const len = 62 + (i % 2 === 0 ? 3 : -1);
+        const d = generatePetalD(cx, cy, angle, len, 14, curl);
+        layerMid2.appendChild(createPetalElement(d, 'url(#petalGradMid)'));
+      }
+
+      // 5. Layer Inner: Incurved petals (18 petals)
+      const count5 = 18;
+      for (let i = 0; i < count5; i++) {
+        const angle = (i * 360 / count5) + 6;
+        const curl = 2;
+        const len = 48 + (i % 2 === 0 ? 2 : -1);
+        const d = generatePetalD(cx, cy, angle, len, 13, curl);
+        layerInner.appendChild(createPetalElement(d, 'url(#petalGradInner)'));
+      }
+
+      // 6. Layer Center Cup: Compact florets surrounding the center button (14 petals)
+      const count6 = 14;
+      for (let i = 0; i < count6; i++) {
+        const angle = (i * 360 / count6) + 12;
+        const len = 34 + (i % 2 === 0 ? 2 : -1);
+        const d = generatePetalD(cx, cy, angle, len, 11, 0);
+        layerCenterCup.appendChild(createPetalElement(d, 'url(#petalGradInner)'));
+      }
+
+      // 7. Center floret dots (Golden sparkling eye of the chrysanthemum)
+      for (let r = 4; r <= 17; r += 3.5) {
+        const dotsInRing = Math.floor(r * 2.4);
+        for (let j = 0; j < dotsInRing; j++) {
+          const theta = (j * 2 * Math.PI / dotsInRing) + (r * 0.45);
+          const x = cx + r * Math.cos(theta);
+          const y = cy + r * Math.sin(theta);
+          const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          dot.setAttribute('cx', x.toFixed(1));
+          dot.setAttribute('cy', y.toFixed(1));
+          dot.setAttribute('r', (1.2 + (r === 4 ? 0.3 : 0)).toFixed(1));
+          centerFlorets.appendChild(dot);
+        }
+      }
+    }
+
+    buildChrysanthemumFlower();
+
+
+    /* =====================================================================
+       3. FLOWER COLOR THEMES & DYNAMIC TRANSITIONS (Water Interaction)
+       ===================================================================== */
+    const colorThemes = [
+      {
+        name: "Aşk Pembesi 🌸",
+        p1: "#ff4d6d",
+        p2: "#ff758f",
+        p3: "#ffb3c1",
+        p4: "#ffe5ec",
+        center: "#ffd166",
+        core: "#e76f51"
+      },
+      {
+        name: "Altın Günbatımı 🌅",
+        p1: "#e85d04",
+        p2: "#f48c06",
+        p3: "#faa307",
+        p4: "#ffba08",
+        center: "#ffe3a0",
+        core: "#9d0208"
+      },
+      {
+        name: "Lavanta Rüyası 💜",
+        p1: "#7209b7",
+        p2: "#9d4edd",
+        p3: "#c77dff",
+        p4: "#e0aaff",
+        center: "#ffbe0b",
+        core: "#3a0ca3"
+      },
+      {
+        name: "Gül Mercanı 🌷",
+        p1: "#e63946",
+        p2: "#f3722c",
+        p3: "#f8961e",
+        p4: "#f9c74f",
+        center: "#fff3b0",
+        core: "#d62828"
+      },
+      {
+        name: "Buz Mavisi Masalı 💎",
+        p1: "#0077b6",
+        p2: "#0096c7",
+        p3: "#48cae4",
+        p4: "#ade8f4",
+        center: "#f72585",
+        core: "#03045e"
+      },
+      {
+        name: "Büyülü Fuşya 💖",
+        p1: "#d00000",
+        p2: "#dc2f02",
+        p3: "#ff0054",
+        p4: "#ff5400",
+        center: "#ffbe0b",
+        core: "#6a040f"
+      }
+    ];
+
+    let currentThemeIdx = 0;
+    const colorToast = document.getElementById('colorToast');
+
+    function applyNextFlowerColor() {
+      currentThemeIdx = (currentThemeIdx + 1) % colorThemes.length;
+      const theme = colorThemes[currentThemeIdx];
+
+      // Smoothly update CSS custom properties
+      document.documentElement.style.setProperty('--flower-p1', theme.p1);
+      document.documentElement.style.setProperty('--flower-p2', theme.p2);
+      document.documentElement.style.setProperty('--flower-p3', theme.p3);
+      document.documentElement.style.setProperty('--flower-p4', theme.p4);
+      document.documentElement.style.setProperty('--flower-center', theme.center);
+      document.documentElement.style.setProperty('--flower-core', theme.core);
+
+      // Show toast
+      colorToast.textContent = `${theme.name} Rengi Açıldı! ✨`;
+      colorToast.classList.add('show');
+      setTimeout(() => {
+        colorToast.classList.remove('show');
+      }, 2200);
+
+      // Bloom burst animation
+      const flowerSvg = document.getElementById('flowerSvg');
+      flowerSvg.style.transform = 'scale(1.1) rotate(2deg)';
+      setTimeout(() => {
+        flowerSvg.style.transform = 'scale(1) rotate(0deg)';
+      }, 350);
+    }
+
+
+    /* =====================================================================
+       4. FLOWER MICRO-INTERACTIONS (Hover / Mouse Move / Touch Sway)
+       ===================================================================== */
+    const flowerContainer = document.getElementById('flowerContainer');
+    const flowerSvg = document.getElementById('flowerSvg');
+
+    // Trigger wiggle animation
+    function triggerFlowerWiggle() {
+      flowerContainer.classList.remove('idle-sway');
+      flowerContainer.classList.remove('wiggle-fast');
+      // Trigger reflow
+      void flowerContainer.offsetWidth;
+      flowerContainer.classList.add('wiggle-fast');
+
+      setTimeout(() => {
+        flowerContainer.classList.remove('wiggle-fast');
+        flowerContainer.classList.add('idle-sway');
+      }, 750);
+    }
+
+    flowerContainer.addEventListener('click', () => {
+      sound.playPickup();
+      triggerFlowerWiggle();
+      createHeartBurstAtCenter();
+    });
+
+    // Reactive micro-rotation when mouse moves over the flower
+    flowerContainer.addEventListener('mousemove', (e) => {
+      const rect = flowerContainer.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const deltaX = (e.clientX - centerX) / (rect.width / 2);
+      const deltaY = (e.clientY - centerY) / (rect.height / 2);
+
+      const rotateDeg = deltaX * 7;
+      const scaleVal = 1 + Math.abs(deltaY) * 0.04;
+      flowerSvg.style.transform = `rotate(${rotateDeg}deg) scale(${scaleVal})`;
+    });
+
+    flowerContainer.addEventListener('mouseleave', () => {
+      flowerSvg.style.transform = '';
+    });
+
+    // Mobile touch wiggle reaction
+    flowerContainer.addEventListener('touchstart', (e) => {
+      sound.playPickup();
+      triggerFlowerWiggle();
+      createHeartBurstAtCenter();
+    }, { passive: true });
+
+
+    /* =====================================================================
+       5. DRAG & DROP SYSTEM (Unified Pointer Events for Mouse & Touch)
+       ===================================================================== */
+    const itemSlots = document.querySelectorAll('.item-slot');
+    const dropIndicator = document.getElementById('dropIndicator');
+
+    let activeDrag = null; // { type, element, ghost, lastSunHeartTime }
+    let lastHeartTime = 0;
+
+    // Helper: calculate distance between two points
+    function getDistance(x1, y1, x2, y2) {
+      const dx = x1 - x2;
+      const dy = y1 - y2;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    // Helper: get center coordinates of flower bloom
+    function getFlowerCenter() {
+      const rect = flowerContainer.getBoundingClientRect();
+      // Bloom is located in upper portion of the container
+      return {
+        x: rect.left + rect.width * 0.5,
+        y: rect.top + rect.height * 0.35,
+        radius: Math.min(rect.width, rect.height) * 0.38
+      };
+    }
+
+    itemSlots.forEach((slot) => {
+      slot.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        sound.init();
+        sound.playPickup();
+
+        const type = slot.getAttribute('data-type');
+        const badge = slot.querySelector('.item-badge');
+
+        // Create Ghost Element
+        const ghost = badge.cloneNode(true);
+        ghost.classList.add('drag-ghost');
+        document.body.appendChild(ghost);
+
+        activeDrag = {
+          type: type,
+          originalSlot: slot,
+          ghost: ghost,
+          lastHeartX: e.clientX,
+          lastHeartY: e.clientY
+        };
+
+        updateGhostPosition(e.clientX, e.clientY);
+
+        // Capture pointer events
+        slot.setPointerCapture(e.pointerId);
+      });
+
+      slot.addEventListener('pointermove', (e) => {
+        if (!activeDrag) return;
+        updateGhostPosition(e.clientX, e.clientY);
+        handleDragHover(e.clientX, e.clientY);
+      });
+
+      slot.addEventListener('pointerup', (e) => {
+        if (!activeDrag) return;
+        handleDrop(e.clientX, e.clientY);
+        endDrag();
+      });
+
+      slot.addEventListener('pointercancel', () => {
+        if (!activeDrag) return;
+        endDrag();
+      });
+    });
+
+    function updateGhostPosition(x, y) {
+      if (!activeDrag || !activeDrag.ghost) return;
+      activeDrag.ghost.style.left = `${x}px`;
+      activeDrag.ghost.style.top = `${y}px`;
+    }
+
+    // Handles proximity checks during dragging
+    function handleDragHover(pointerX, pointerY) {
+      const flower = getFlowerCenter();
+      const dist = getDistance(pointerX, pointerY, flower.x, flower.y);
+      const isNearFlower = dist < (flower.radius + 120);
+
+      if (isNearFlower) {
+        dropIndicator.classList.add('active');
+        flowerContainer.classList.add('glowing');
+      } else {
+        dropIndicator.classList.remove('active');
+        flowerContainer.classList.remove('glowing');
+      }
+    }
+
+    function endDrag() {
+      if (activeDrag && activeDrag.ghost) {
+        activeDrag.ghost.remove();
+      }
+      activeDrag = null;
+      dropIndicator.classList.remove('active');
+      flowerContainer.classList.remove('glowing');
+    }
+
+    // Handle Drop onto the Chrysanthemum
+    function handleDrop(dropX, dropY) {
+      const flower = getFlowerCenter();
+      const dist = getDistance(dropX, dropY, flower.x, flower.y);
+      const isDroppedOnFlower = dist < (flower.radius + 100);
+
+      if (!isDroppedOnFlower) return;
+
+      const itemType = activeDrag.type;
+
+      if (itemType === 'sun') {
+        // Sun dropped on flower: 2-second rich sunshine animation with hearts & emojis!
+        triggerSunAnimation(flower.x, flower.y);
+      } else if (itemType === 'water') {
+        // ITEM 2: WATER MECHANIC
+        // "When dragged and dropped onto the chrysanthemum, the flower's color should dynamically change/transition to a new vibrant color."
+        sound.playWaterSplash();
+        triggerFlowerWiggle();
+        createWaterSplashParticles(flower.x, flower.y);
+        applyNextFlowerColor();
+      } else if (itemType === 'fertilizer') {
+        // ITEM 3: FERTILIZER MECHANIC
+        // "When dragged and dropped onto the chrysanthemum, hearts should slowly inflate and pop on top of the flower.
+        // Right after the hearts pop, display a randomized romantic message from the list below in a cute popup"
+        triggerFertilizerHeartInflation(flower.x, flower.y);
+      }
+    }
+
+
+    /* =====================================================================
+       6. SPECIAL EFFECTS & PARTICLES
+       ===================================================================== */
+    // 2-Second Sunshine & Love Emoji Animation (Triggered on Sun Drop)
+    const sunEmojis = ['💖', '✨', '💕', '🌸', '💐', '😍', '💫', '🌹', '❤️'];
+    let isSunAnimating = false;
+
+    function triggerSunAnimation(cx, cy) {
+      if (isSunAnimating) return;
+      isSunAnimating = true;
+
+      // Play joyful 2-second celestial melody
+      sound.playSunMelody();
+
+      // Flower visual sunshine basking effect
+      flowerContainer.classList.add('sun-basking');
+
+      // Toast notification
+      colorToast.textContent = "Ecem'in Güneşi Çiçeği Isıtıyor ☀️💖";
+      colorToast.classList.add('show');
+
+      const startTime = Date.now();
+      const durationMs = 2000;
+
+      // Spew hearts & emojis widely for 2 seconds
+      const intervalId = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        if (elapsed >= durationMs) {
+          clearInterval(intervalId);
+          setTimeout(() => {
+            flowerContainer.classList.remove('sun-basking');
+            colorToast.classList.remove('show');
+            isSunAnimating = false;
+          }, 350);
+          return;
+        }
+
+        // Spawn 1-2 emoji/heart particles every tick
+        const count = Math.random() < 0.7 ? 2 : 1;
+        for (let i = 0; i < count; i++) {
+          spawnSunEmojiParticle(cx, cy);
+        }
+      }, 60);
+    }
+
+    function spawnSunEmojiParticle(cx, cy) {
+      const emojiEl = document.createElement('div');
+      emojiEl.className = 'sun-emoji-particle';
+      const emoji = sunEmojis[Math.floor(Math.random() * sunEmojis.length)];
+      emojiEl.textContent = emoji;
+
+      // Generous starting area around the flower bloom
+      const startAngle = Math.random() * Math.PI * 2;
+      const startRadius = Math.random() * 85;
+      const startX = cx + Math.cos(startAngle) * startRadius;
+      const startY = cy + Math.sin(startAngle) * (startRadius * 0.7);
+      emojiEl.style.left = `${startX}px`;
+      emojiEl.style.top = `${startY}px`;
+
+      // Wide expansive dispersion across the screen (large canopy)
+      const maxScreenSpread = Math.min(window.innerWidth * 0.46, 540);
+      const angle = (-190 + Math.random() * 200) * Math.PI / 180;
+
+      const speedMid = 110 + Math.random() * 180;
+      const speedEnd = 240 + Math.random() * (maxScreenSpread - 80);
+
+      // Horizontal spread factor to sweep wide left and right
+      const sideSweep = (Math.random() - 0.5) * 2;
+      const dx1 = Math.cos(angle) * speedMid + sideSweep * 90;
+      const dy1 = Math.sin(angle) * speedMid - 40;
+
+      const dx2 = Math.cos(angle) * speedEnd + sideSweep * (maxScreenSpread * 0.55);
+      const dy2 = Math.sin(angle) * speedEnd - 70 - Math.random() * 110;
+
+      const rot1 = (Math.random() - 0.5) * 50;
+      const rot2 = (Math.random() - 0.5) * 160;
+      const size = 1.35 + Math.random() * 1.35; // 1.35rem - 2.7rem
+      const duration = 1.5 + Math.random() * 0.7; // 1.5s - 2.2s
+
+      emojiEl.style.setProperty('--dx1', `${dx1.toFixed(1)}px`);
+      emojiEl.style.setProperty('--dy1', `${dy1.toFixed(1)}px`);
+      emojiEl.style.setProperty('--dx2', `${dx2.toFixed(1)}px`);
+      emojiEl.style.setProperty('--dy2', `${dy2.toFixed(1)}px`);
+      emojiEl.style.setProperty('--rot1', `${rot1.toFixed(1)}deg`);
+      emojiEl.style.setProperty('--rot2', `${rot2.toFixed(1)}deg`);
+      emojiEl.style.setProperty('--sz', `${size.toFixed(2)}rem`);
+      emojiEl.style.setProperty('--dur', `${duration.toFixed(2)}s`);
+
+      document.body.appendChild(emojiEl);
+      setTimeout(() => emojiEl.remove(), duration * 1000 + 100);
+    }
+
+    // Water droplets splash particles
+    function createWaterSplashParticles(cx, cy) {
+      const count = 28;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 60 + Math.random() * 95;
+        const px = Math.cos(angle) * speed;
+        const py = Math.sin(angle) * speed - 20;
+
+        p.style.setProperty('--px', `${px}px`);
+        p.style.setProperty('--py', `${py}px`);
+        p.style.left = `${cx}px`;
+        p.style.top = `${cy}px`;
+        p.style.width = `${6 + Math.random() * 8}px`;
+        p.style.height = p.style.width;
+        p.style.background = ['#48cae4', '#00b4d8', '#90e0ef', '#caf0f8', '#ffffff'][i % 5];
+        p.style.boxShadow = '0 0 10px rgba(72, 202, 228, 0.8)';
+
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+      }
+    }
+
+    // Heart burst on click
+    function createHeartBurstAtCenter() {
+      const flower = getFlowerCenter();
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          spawnSunEmojiParticle(flower.x, flower.y);
+        }, i * 60);
+      }
+    }
+
+    // Fertilizer hearts inflation & pop sequence
+    function triggerFertilizerHeartInflation(cx, cy) {
+      sound.playInflate();
+      triggerFlowerWiggle();
+
+      const offsets = [
+        { dx: 0, dy: -25, rot: 4, delay: 0 },
+        { dx: -35, dy: -15, rot: -12, delay: 180 },
+        { dx: 38, dy: -18, rot: 15, delay: 320 }
+      ];
+
+      offsets.forEach((conf) => {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'inflating-heart';
+          heart.innerHTML = '♥';
+          heart.style.setProperty('--dx', `${conf.dx}px`);
+          heart.style.setProperty('--dy', `${conf.dy}px`);
+          heart.style.setProperty('--rot', `${conf.rot}deg`);
+          heart.style.fontSize = '2.4rem';
+
+          flowerContainer.appendChild(heart);
+          setTimeout(() => heart.remove(), 2300);
+        }, conf.delay);
+      });
+
+      // At climax of inflation (approx 2.1s), POP and show romantic quote
+      setTimeout(() => {
+        sound.playPop();
+
+        // Pop particles
+        for (let i = 0; i < 35; i++) {
+          const p = document.createElement('div');
+          p.className = 'particle';
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 80 + Math.random() * 140;
+          const px = Math.cos(angle) * speed;
+          const py = Math.sin(angle) * speed;
+
+          p.style.setProperty('--px', `${px}px`);
+          p.style.setProperty('--py', `${py}px`);
+          p.style.left = `${cx}px`;
+          p.style.top = `${cy - 20}px`;
+          p.style.width = `${7 + Math.random() * 9}px`;
+          p.style.height = p.style.width;
+          p.style.background = ['#ff4d6d', '#ff758f', '#c77dff', '#ffd166', '#ffffff'][i % 5];
+          p.style.boxShadow = '0 0 12px rgba(255, 77, 109, 0.9)';
+
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), 800);
+        }
+
+        // Show Romantic Message Modal right after pop
+        setTimeout(() => {
+          showRandomRomanticMessage();
+        }, 220);
+
+      }, 2100);
+    }
+
+
+    /* =====================================================================
+       7. ROMANTIC MESSAGE MODAL POPUP
+       ===================================================================== */
+    const romanticMessages = [
+      "Seni her gün, dünden daha çok seviyorum.",
+      "Dünümde vardın, bugünümde varsın, bütün yarınlarımda da seni istiyorum.",
+      "Sanki kalbim seni tanımadan önce de seni arıyormuş gibi."
+    ];
+
+    let lastMessageIdx = -1;
+    const loveModal = document.getElementById('loveModal');
+    const loveMessageText = document.getElementById('loveMessageText');
+    const closeCardBtn = document.getElementById('closeCardBtn');
+
+    function showRandomRomanticMessage() {
+      let chosenIdx = Math.floor(Math.random() * romanticMessages.length);
+      // Ensure variation if possible
+      if (chosenIdx === lastMessageIdx && romanticMessages.length > 1) {
+        chosenIdx = (chosenIdx + 1) % romanticMessages.length;
+      }
+      lastMessageIdx = chosenIdx;
+
+      loveMessageText.textContent = `"${romanticMessages[chosenIdx]}"`;
+      loveModal.classList.add('active');
+      sound.playLoveChord();
+    }
+
+    function closeRomanticModal() {
+      loveModal.classList.remove('active');
+    }
+
+    closeCardBtn.addEventListener('click', closeRomanticModal);
+    loveModal.addEventListener('click', (e) => {
+      if (e.target === loveModal) {
+        closeRomanticModal();
+      }
+    });
+
+
+    /* =====================================================================
+       8. AMBIENT BACKGROUND PARTICLES (Bokeh & Stardust Canvas)
+       ===================================================================== */
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    const particleCount = 38;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class AmbientDust {
+      constructor() {
+        this.reset(true);
+      }
+
+      reset(init = false) {
+        this.x = Math.random() * canvas.width;
+        this.y = init ? Math.random() * canvas.height : canvas.height + 20;
+        this.size = 1.5 + Math.random() * 3.5;
+        this.speedY = 0.2 + Math.random() * 0.55;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.alpha = 0.15 + Math.random() * 0.45;
+        this.color = ['#ffccd5', '#ffe5ec', '#e2eafc', '#ffd166', '#d8bbff'][Math.floor(Math.random() * 5)];
+        this.pulse = Math.random() * Math.PI;
+      }
+
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        this.pulse += 0.03;
+
+        if (this.y < -30 || this.x < -30 || this.x > canvas.width + 30) {
+          this.reset(false);
+        }
+      }
+
+      draw() {
+        ctx.save();
+        const currentAlpha = Math.max(0, this.alpha + Math.sin(this.pulse) * 0.12);
+        ctx.globalAlpha = currentAlpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new AmbientDust());
+    }
+
+    function renderAmbient() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(renderAmbient);
+    }
+    renderAmbient();
+  </script>
+</body>
+
+</html>
